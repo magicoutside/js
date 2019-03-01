@@ -1,4 +1,4 @@
-class Logger{
+class ConsoleLogger{
     log(message){
         console.log(message);
     }
@@ -7,11 +7,34 @@ class Logger{
 class FileLogger{
     log(text){
         let fs = require("fs");
-        fs.appendFileSync("filename.txt", text);
+        fs.appendFileSync("log.txt", text + '\r\n');
     }
 }
 
-let fcr = new FileLogger()
-fcr.log('test1')
-fcr.log('test2')
-fcr.log('test3')
+class EmptyLogger{
+    log(text){
+    }
+}
+
+class MultiLogger{
+    constructor(loggers){
+        this.loggers = loggers
+    }
+
+    log(message){
+        this.loggers.map(logger => logger.log(message))
+    }
+}
+
+
+
+//----
+
+
+
+
+
+let logger = new MultiLogger([new FileLogger(), new ConsoleLogger(), new EmptyLogger()])
+logger.log('test1')
+logger.log('test2')
+logger.log('test3')
